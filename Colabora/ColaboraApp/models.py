@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class Departamento(models.Model):
-    nomeDepartamento = models.CharField(max_length=20, null = False)
+    nomeDepartamento = models.CharField(max_length=50, null = False)
 
     class Meta:
         db_table = 'Departamento'
@@ -46,9 +46,9 @@ class Colaborador(models.Model):
     )
     sexo_choices = models.CharField(max_length=2, choices=sexo_choices, null = False)
 
-    #departamento = models.ForeignKey(Departamento , on_delete=models.CASCADE)
+    departamento = models.ForeignKey(Departamento , on_delete=models.CASCADE)
 
-    #funcao = models.ForeignKey(Funcao, on_delete=models.CASCADE)
+    funcao = models.ForeignKey(Funcao, on_delete=models.CASCADE)
 
     foto_colaborador = models.BinaryField(max_length=None, editable=True)
 	

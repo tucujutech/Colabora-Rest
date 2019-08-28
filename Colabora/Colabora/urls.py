@@ -15,8 +15,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+
+from ColaboraApp.ViewSets import ColaboradorViewSet
+from ColaboraApp.ViewSets import FormacaoViewSet, TipoFormacaoViewSet, DepartamentoViewSet, FuncaoViewSet
+
+router = DefaultRouter()
+router.register('Colabora/colaborador',ColaboradorViewSet)
+router.register('Colabora/formacao',FormacaoViewSet)
+router.register('Colabora/tipo_formacao',TipoFormacaoViewSet)
+router.register('Colabora/departamento',DepartamentoViewSet)
+router.register('Colabora/funcao', FuncaoViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('Colabora/',include('ColaboraApp.urls')),
+    path('',include(router.urls)),
 ]
