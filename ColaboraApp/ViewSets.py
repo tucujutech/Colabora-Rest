@@ -18,6 +18,10 @@ class FormacaoViewSet(ModelViewSet):
     queryset = Formacao.objects.all()
     serializer_class = FormacaoSerializer
 
+# ========== Hora Extra ViewSet ============
+class HoraExtraViewSet(ModelViewSet):
+    queryset = HoraExtra.objects.all()
+    serializer_class = HoraExtraSerializer
 
 # ========== Tipo Formacao ViewSet =========
 

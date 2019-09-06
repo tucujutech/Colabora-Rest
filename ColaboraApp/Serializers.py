@@ -48,3 +48,10 @@ class FuncaoSerializer(ModelSerializer):
     class Meta:
         model = Funcao
         fields = ('id', 'nomeFuncao', 'departamento')
+
+
+# ========= Hora Extra Serializer ================
+class HoraExtraSerializer(ModelSerializer):
+    class Meta:
+        model =HoraExtra
+        fields = ('id', 'colaborador', 'data', 'hora_inicio', 'hora_fim', 'faturado')

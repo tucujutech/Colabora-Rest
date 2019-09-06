@@ -18,7 +18,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from ColaboraApp.ViewSets import ColaboradorViewSet
-from ColaboraApp.ViewSets import FormacaoViewSet, TipoFormacaoViewSet, DepartamentoViewSet, FuncaoViewSet
+from ColaboraApp.ViewSets import FormacaoViewSet, TipoFormacaoViewSet, DepartamentoViewSet, FuncaoViewSet, HoraExtraViewSet
 
 router = DefaultRouter()
 router.register('Colabora/colaborador',ColaboradorViewSet)
@@ -26,6 +26,7 @@ router.register('Colabora/formacao',FormacaoViewSet)
 router.register('Colabora/tipo_formacao',TipoFormacaoViewSet)
 router.register('Colabora/departamento',DepartamentoViewSet)
 router.register('Colabora/funcao', FuncaoViewSet)
+router.register('Colabora/horaExtra',HoraExtraViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),

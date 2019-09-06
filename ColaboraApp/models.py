@@ -1,8 +1,11 @@
-from django.db import models
+from django.db import models, connection
 
 # Create your models here.
+from django.db.models import Count
+
+
 class Departamento(models.Model):
-    nomeDepartamento = models.CharField(max_length=50, null = False)
+    nomeDepartamento = models.CharField(max_length=50, null = False, unique=True)
 
     class Meta:
         db_table = 'Departamento'
@@ -12,8 +15,8 @@ class Departamento(models.Model):
 
 
 class Funcao(models.Model):
-    nomeFuncao = models.CharField(max_length=20, null = False)
-    departamento = models.ForeignKey(Departamento, on_delete=models.CASCADE)
+    nomeFuncao = models.CharField(max_length=20, null = False, unique=True)
+    departamento = models.ForeignKey(Departamento, on_delete=models.CASCADE, to_field="nomeDepartamento")
 
     class Meta:
         db_table = 'Funcao'
@@ -22,8 +25,7 @@ class Funcao(models.Model):
         return self.nomeFuncao
 
 class Colaborador(models.Model):
-    nome = models.CharField(max_length=30, null = False)
-    sobrenome = models.CharField(max_length=30, null = False)
+    nome = models.CharField(max_length=60, null = False, unique=True)
     nascimento = models.DateField(null = False)
     rg = models.CharField(max_length=12, null = False)
     cpf = models.CharField(max_length=12, null = False)
@@ -46,9 +48,9 @@ class Colaborador(models.Model):
     )
     sexo_choices = models.CharField(max_length=2, choices=sexo_choices, null = False)
 
-    departamento = models.ForeignKey(Departamento , on_delete=models.CASCADE)
+    departamento = models.ForeignKey(Departamento , on_delete=models.CASCADE, to_field='nomeDepartamento')
 
-    funcao = models.ForeignKey(Funcao, on_delete=models.CASCADE)
+    funcao = models.ForeignKey(Funcao, on_delete=models.CASCADE, to_field='nomeFuncao')
 
     foto_colaborador = models.BinaryField(max_length=None, editable=True)
 	
@@ -56,11 +58,11 @@ class Colaborador(models.Model):
         db_table= 'Colaborador'
 
     def __str__(self):
-        return self.nome+" "+self.sobrenome
+        return self.nome
 
 
 class TipoFormacao(models.Model):
-    tipo_formacao = models.CharField(max_length=13, null = False)
+    tipo_formacao = models.CharField(max_length=13, null = False, unique=True)
 
     class Meta:
         db_table = 'Tipo_Formacao'
@@ -81,7 +83,7 @@ class Formacao(models.Model):
      #   ('Certificação','Certificação')
    # )
 
-    tipo_formacao = models.ForeignKey(TipoFormacao, on_delete=models.CASCADE, null = False)
+    tipo_formacao = models.ForeignKey(TipoFormacao, on_delete=models.CASCADE, null = False, to_field='tipo_formacao')
     nome_curso = models.CharField(max_length=50, null = False)
     instituicao = models.CharField(max_length=50, null = False)
     dt_inicio = models.DateField(null = False)
@@ -94,4 +96,26 @@ class Formacao(models.Model):
         return self.nome_curso
 
 
+class HoraExtra(models.Model):
+    colaborador = models.ForeignKey(Colaborador, on_delete=models.CASCADE, null= False, to_field='nome')
+    data = models.DateField(null=False)
+    hora_inicio = models.TimeField(null=False)
+    hora_fim = models.TimeField(null= False)
+    faturado = models.BooleanField(null=False)
 
+
+    class Meta:
+        db_table = 'HoraExtra'
+
+    def __str__(self):
+        return self.colaborador
+
+    # This method counts the extra hours that are still active, or be, those who aren´t invoiced
+    def CountHoraExtraNaoFaturada(self, colaborador):
+
+        with connection.cursor() as cursor:
+            cursor.execute('select count(t.data) from public."HoraExtra" t where t.colaborador_id = '
+                           '(select id from public."Colaborador" where nome = %s) and t.faturado = false', [colaborador])
+            row = cursor.fetchone()
+        return row[0]
+    # This method limits the quantity of extra hours registered by week
