@@ -8,7 +8,7 @@ from .models import *
 class ColaboradorSerializer(ModelSerializer):
     class Meta:
         model = Colaborador
-        fields = ('id', 'nome', 'sobrenome', 'nascimento', 'rg', 'cpf',
+        fields = ('id', 'nome', 'nascimento', 'rg', 'cpf',
                   'telefone', 'cnh', 'cnh_tipo', 'sexo_choices',
                   'departamento', 'funcao', 'foto_colaborador')
 
